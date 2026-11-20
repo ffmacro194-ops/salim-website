@@ -1,0 +1,244 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Salim Jr. | My Universe</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  min-height: 100vh;
+  background: #080817;
+  color: white;
+  font-family: 'Poppins', sans-serif;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 20% 20%, #54218a55, transparent 35%),
+    radial-gradient(circle at 80% 80%, #251b7655, transparent 40%);
+  pointer-events: none;
+}
+
+.stars {
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(2px 2px at 20% 30%, white, transparent),
+    radial-gradient(2px 2px at 80% 20%, #bca5ff, transparent),
+    radial-gradient(2px 2px at 50% 70%, white, transparent),
+    radial-gradient(2px 2px at 90% 90%, white, transparent);
+  background-size: 180px 180px;
+  animation: twinkle 5s infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes twinkle {
+  from { opacity: .35; }
+  to { opacity: 1; }
+}
+
+nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 8%;
+  position: relative;
+  z-index: 2;
+}
+
+.logo {
+  font-family: 'Orbitron', sans-serif;
+  color: #d5aaff;
+  letter-spacing: 3px;
+  font-size: 17px;
+}
+
+nav span {
+  color: #a99abf;
+  font-size: 12px;
+  letter-spacing: 2px;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  max-width: 900px;
+  margin: 45px auto;
+  padding: 20px;
+}
+
+.hero {
+  text-align: center;
+  border: 1px solid #a66cff66;
+  border-radius: 28px;
+  padding: 35px 20px 45px;
+  background: #17142cbb;
+  backdrop-filter: blur(15px);
+  box-shadow: 0 0 50px #7734b533;
+}
+
+.moon {
+  font-size: 65px;
+  display: inline-block;
+  filter: drop-shadow(0 0 20px #ffcf56);
+  animation: float 4s ease-in-out infinite;
+}
+
+@keyframes float {
+  50% { transform: translateY(-12px); }
+}
+
+h1 {
+  font-family: 'Orbitron', sans-serif;
+  font-size: clamp(35px, 9vw, 65px);
+  letter-spacing: 7px;
+  margin: 20px 0;
+  color: #e2baff;
+  text-shadow: 0 0 25px #ad63ff;
+}
+
+.subtitle {
+  color: #c9aaff;
+  letter-spacing: 5px;
+  font-size: 13px;
+  margin-bottom: 28px;
+}
+
+.hero-image {
+  width: 100%;
+  max-width: 650px;
+  height: 240px;
+  object-fit: cover;
+  border-radius: 18px;
+  border: 1px solid #b47aff88;
+  box-shadow: 0 0 30px #863dca44;
+  margin-bottom: 30px;
+}
+
+.description {
+  color: #c9c4d9;
+  line-height: 2;
+  font-size: 15px;
+  margin-bottom: 30px;
+}
+
+button {
+  padding: 16px 32px;
+  border: 0;
+  border-radius: 40px;
+  color: white;
+  background: linear-gradient(110deg, #873ce3, #bd65e9);
+  font-size: 16px;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 0 25px #a64cff66;
+  transition: .3s;
+}
+
+button:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 0 40px #b46aff;
+}
+
+#secret {
+  display: none;
+  margin: 30px auto 0;
+  padding: 22px;
+  max-width: 550px;
+  border: 1px solid #a66cff66;
+  border-radius: 18px;
+  background: #251b3d;
+  color: #dfc8ff;
+  line-height: 2;
+}
+
+footer {
+  text-align: center;
+  color: #817493;
+  font-size: 12px;
+  margin-top: 40px;
+  letter-spacing: 1px;
+}
+
+@media(max-width: 500px) {
+  .container { margin: 20px auto; }
+  .hero { padding: 35px 16px; }
+  .hero-image { height: 190px; }
+  .subtitle { letter-spacing: 3px; }
+}
+</style>
+</head>
+
+<body>
+<div class="stars"></div>
+
+<nav>
+  <div class="logo">SALIM JR.</div>
+  <span>✦ PERSONAL UNIVERSE ✦</span>
+</nav>
+
+<main class="container">
+<section class="hero">
+
+<div class="moon">🌙</div>
+
+<h1>SALIM JR.</h1>
+<p class="subtitle">WELCOME TO MY UNIVERSE</p>
+
+<img class="hero-image"
+src="https://images.unsplash.com/photo-1462331940025-496dfbfc7564?w=1000&auto=format&fit=crop&q=85"
+alt="Cosmic nebula">
+
+<p class="description">
+Just another soul exploring this vast universe.<br>
+Dreams, curiosity and endless possibilities.<br>
+Somewhere between reality and imagination.
+</p>
+
+<button onclick="enterWorld()">
+✦ Enter My World ✦
+</button>
+
+<div id="secret">
+<h2>You've entered my universe ✨</h2>
+<p>
+Every star has a story.<br>
+Every journey has a beginning.<br>
+This is mine.
+</p>
+<p>— Salim Jr.</p>
+</div>
+
+</section>
+
+<footer>
+MADE WITH CURIOSITY BY SALIM JR. © 2026
+</footer>
+</main>
+
+<script>
+function enterWorld() {
+const secret = document.getElementById("secret");
+secret.style.display = "block";
+secret.scrollIntoView({ behavior: "smooth" });
+}
+</script>
+
+</body>
+</html>
+
+
