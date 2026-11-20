@@ -238,6 +238,260 @@ secret.scrollIntoView({ behavior: "smooth" });
 }
 </script>
 
+
+
+<section id="snake-game">
+  <h2>🌌 COSMIC SNAKE</h2>
+  <p>Eat the glowing food. Grow your snake!</p>
+
+  <div class="snake-score">
+    Score: <span id="snake-score">0</span>
+    &nbsp; Best: <span id="snake-best">0</span>
+  </div>
+
+  <canvas id="snake-canvas" width="360" height="360"></canvas>
+
+  <div class="snake-buttons">
+    <button onclick="snakeStart()">START</button>
+    <button onclick="snakePause()">PAUSE</button>
+    <button onclick="snakeRestart()">RESTART</button>
+  </div>
+
+  <div class="snake-controls">
+    <button onclick="snakeMove('up')">▲</button>
+    <div>
+      <button onclick="snakeMove('left')">◀</button>
+      <button onclick="snakeMove('down')">▼</button>
+      <button onclick="snakeMove('right')">▶</button>
+    </div>
+  </div>
+
+  <p id="snake-message">Press START to play!</p>
+</section>
+
+<style>
+#snake-game {
+  margin: 40px auto;
+  padding: 22px 12px;
+  max-width: 500px;
+  text-align: center;
+  color: #e2baff;
+  background: #17142c;
+  border: 1px solid #a66cff66;
+  border-radius: 22px;
+  box-shadow: 0 0 30px #7734b533;
+}
+
+#snake-game h2 {
+  font-family: 'Orbitron', sans-serif;
+  margin-bottom: 12px;
+}
+
+#snake-game p {
+  margin: 12px 0;
+  color: #c9aaff;
+}
+
+.snake-score {
+  margin: 18px 0;
+  font-size: 15px;
+}
+
+#snake-canvas {
+  display: block;
+  width: 100%;
+  max-width: 360px;
+  height: auto;
+  margin: auto;
+  background: #080817;
+  border: 2px solid #873ce3;
+  border-radius: 12px;
+}
+
+.snake-buttons,
+.snake-controls {
+  margin-top: 18px;
+}
+
+#snake-game button {
+  margin: 5px;
+  padding: 12px 17px;
+  font-size: 14px;
+  border-radius: 12px;
+}
+</style>
+
+<script>
+const snakeCanvas = document.getElementById("snake-canvas");
+const snakeCtx = snakeCanvas.getContext("2d");
+
+let snake = [];
+let food = {};
+let direction = "right";
+let nextDirection = "right";
+let snakeTimer = null;
+let snakeRunning = false;
+let snakeScore = 0;
+let snakeBest = Number(localStorage.getItem("cosmicSnakeBest")) || 0;
+
+document.getElementById("snake-best").textContent = snakeBest;
+
+function snakeReset() {
+  snake = [
+    {x: 5, y: 9},
+    {x: 4, y: 9},
+    {x: 3, y: 9}
+  ];
+  direction = "right";
+  nextDirection = "right";
+  snakeScore = 0;
+  document.getElementById("snake-score").textContent = 0;
+  snakeFood();
+  snakeDraw();
+}
+
+function snakeFood() {
+  do {
+    food = {
+      x: Math.floor(Math.random() * 18),
+      y: Math.floor(Math.random() * 18)
+    };
+  } while (snake.some(part => part.x === food.x && part.y === food.y));
+}
+
+function snakeDraw() {
+  const size = 20;
+
+  snakeCtx.fillStyle = "#080817";
+  snakeCtx.fillRect(0, 0, 360, 360);
+
+  snakeCtx.fillStyle = "#ff62e8";
+  snakeCtx.shadowColor = "#ff62e8";
+  snakeCtx.shadowBlur = 15;
+  snakeCtx.fillRect(food.x * size + 3, food.y * size + 3, 14, 14);
+
+  snakeCtx.shadowColor = "#a64cff";
+  snakeCtx.shadowBlur = 12;
+
+  snake.forEach((part, i) => {
+    snakeCtx.fillStyle = i === 0 ? "#e2baff" : "#873ce3";
+    snakeCtx.fillRect(part.x * size + 1, part.y * size + 1, 18, 18);
+  });
+
+  snakeCtx.shadowBlur = 0;
+}
+
+function snakeMove(dir) {
+  if (dir === "up" && direction !== "down") nextDirection = "up";
+  if (dir === "down" && direction !== "up") nextDirection = "down";
+  if (dir === "left" && direction !== "right") nextDirection = "left";
+  if (dir === "right" && direction !== "left") nextDirection = "right";
+}
+
+function snakeTick() {
+  direction = nextDirection;
+
+  const head = {...snake[0]};
+
+  if (direction === "up") head.y--;
+  if (direction === "down") head.y++;
+  if (direction === "left") head.x--;
+  if (direction === "right") head.x++;
+
+  const ateFood = head.x === food.x && head.y === food.y;
+
+  if (
+    head.x < 0 || head.x >= 18 ||
+    head.y < 0 || head.y >= 18 ||
+    snake.slice(0, ateFood ? undefined : -1)
+      .some(part => part.x === head.x && part.y === head.y)
+  ) {
+    snakeGameOver();
+    return;
+  }
+
+  snake.unshift(head);
+
+  if (ateFood) {
+    snakeScore++;
+    document.getElementById("snake-score").textContent = snakeScore;
+
+    if (snakeScore > snakeBest) {
+      snakeBest = snakeScore;
+      localStorage.setItem("cosmicSnakeBest", snakeBest);
+      document.getElementById("snake-best").textContent = snakeBest;
+    }
+
+    snakeFood();
+  } else {
+    snake.pop();
+  }
+
+  snakeDraw();
+}
+
+function snakeStart() {
+  if (snakeRunning) return;
+  snakeRunning = true;
+  document.getElementById("snake-message").textContent = "Game running!";
+  snakeTimer = setInterval(snakeTick, 140);
+}
+
+function snakePause() {
+  if (!snakeRunning) return;
+  clearInterval(snakeTimer);
+  snakeRunning = false;
+  document.getElementById("snake-message").textContent = "Game paused.";
+}
+
+function snakeRestart() {
+  clearInterval(snakeTimer);
+  snakeRunning = false;
+  snakeReset();
+  document.getElementById("snake-message").textContent = "New game! Press START.";
+}
+
+function snakeGameOver() {
+  clearInterval(snakeTimer);
+  snakeRunning = false;
+  document.getElementById("snake-message").textContent =
+    "Game over! Your score: " + snakeScore;
+}
+
+document.addEventListener("keydown", function(e) {
+  const keys = {
+    ArrowUp: "up",
+    ArrowDown: "down",
+    ArrowLeft: "left",
+    ArrowRight: "right"
+  };
+  if (keys[e.key]) {
+    e.preventDefault();
+    snakeMove(keys[e.key]);
+  }
+});
+
+let touchX = 0;
+let touchY = 0;
+
+snakeCanvas.addEventListener("touchstart", function(e) {
+  touchX = e.changedTouches[0].clientX;
+  touchY = e.changedTouches[0].clientY;
+}, {passive: true});
+
+snakeCanvas.addEventListener("touchend", function(e) {
+  const dx = e.changedTouches[0].clientX - touchX;
+  const dy = e.changedTouches[0].clientY - touchY;
+
+  if (Math.abs(dx) > Math.abs(dy)) {
+    if (Math.abs(dx) > 20) snakeMove(dx > 0 ? "right" : "left");
+  } else {
+    if (Math.abs(dy) > 20) snakeMove(dy > 0 ? "down" : "up");
+  }
+}, {passive: true});
+
+snakeReset();
+</script>
 </body>
 </html>
 
